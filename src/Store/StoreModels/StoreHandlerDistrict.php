@@ -2,8 +2,9 @@
 namespace App\Store\StoreModels;
 
 use App\Model\District;
+use App\Model\ModelInterface;
 
-class StoreHandlerDistrict
+class StoreHandlerDistrict implements StoreHandlerInterface
 {
     /**
      * @var \PDO
@@ -21,9 +22,9 @@ class StoreHandlerDistrict
 
     /**
      * @param int $id
-     * @return District
+     * @return ModelInterface
      */
-    public function findById(int $id)
+    public function findById(int $id): ModelInterface
     {
         $sdh = $this->pdo->prepare('SELECT * FROM districts d WHERE d.id =  :id');
         $sdh->bindParam(':id', $id);
@@ -35,9 +36,9 @@ class StoreHandlerDistrict
     }
 
     /**
-     * @param District $district
+     * @param ModelInterface|District $district
      */
-    public function create(District &$district): void
+    public function create(ModelInterface &$district): void
     {
         $sdh = $this->pdo->prepare('INSERT INTO districts (name, population, description) VALUES (:name, :population, :description)');
         $sdh->execute([

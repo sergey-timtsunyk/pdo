@@ -1,17 +1,17 @@
 <?php
 /**
  * User: Serhii T.
- * Date: 5/25/18
+ * Date: 5/29/18
  */
 
 namespace App\Model;
 
-class District implements ModelInterface
+class Street implements ModelInterface
 {
     private $id;
     private $name;
-    private $population;
-    private $description;
+    private $type;
+    private $district;
 
     /**
      * @return mixed
@@ -40,32 +40,32 @@ class District implements ModelInterface
     /**
      * @return mixed
      */
-    public function getPopulation()
+    public function getType()
     {
-        return $this->population;
+        return $this->type;
     }
 
     /**
-     * @param mixed $population
+     * @param mixed $type
      */
-    public function setPopulation($population): void
+    public function setType($type): void
     {
-        $this->population = $population;
+        $this->type = $type;
     }
 
     /**
-     * @return mixed
+     * @return District
      */
-    public function getDescription()
+    public function getDistrict(): ?District
     {
-        return $this->description;
+        return $this->district;
     }
 
     /**
-     * @param mixed $description
+     * @param District $district
      */
-    public function setDescription($description): void
+    public function setDistrict(District $district): void
     {
-        $this->description = $description;
+        $this->district = $district;
     }
 }

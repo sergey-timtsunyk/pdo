@@ -9,14 +9,23 @@ $pass = '123';
 try {
     $dbh = new PDO("mysql:host=$host;dbname=$dbName;charset=utf8", $user, $pass);
 
+    \App\Store\FactoryStore::init($dbh);
 
-    $storeHandlerDistrict = new \App\Store\StoreModels\StoreHandlerDistrict($dbh);
+    $storeHandlerStreet = \App\Store\FactoryStore::getStoreHandlerByClassModel(\App\Model\Street::class);
+
+
+    $street = $storeHandlerStreet->findById(1);
+
+    var_dump($street);
+
+
+    $storeHandlerDistrict = \App\Store\FactoryStore::getStoreHandlerByClassModel(\App\Model\District::class);
 
     $district = $storeHandlerDistrict->findById(13);
 
     $district->setName('13 РАЙОН');
 
-    $storeHandlerDistrict->update($district);
+    //$storeHandlerDistrict->update($district);
 
     //@TODO Созданее нового
 /*    $district = new \App\Model\District();
@@ -41,5 +50,6 @@ try {
 
 } catch (PDOException $exception) {
     echo $exception->getMessage();
+} catch (Exception $e) {
 }
 
