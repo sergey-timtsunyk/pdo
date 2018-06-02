@@ -59,4 +59,9 @@ class StoreHandlerStreet implements StoreHandlerInterface
     {
         // TODO: Implement create() method.
     }
+
+    public function collection($conditions = null)
+    {
+        // TODO: Implement collection() method.
+    }
 }

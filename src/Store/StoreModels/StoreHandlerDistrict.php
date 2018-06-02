@@ -55,18 +55,30 @@ class StoreHandlerDistrict implements StoreHandlerInterface
         $district = $sdh->fetch();
     }
 
-    public function update(District $district)
+    public function update(ModelInterface $district)
     {
-
+        $sdh = $this->pdo->prepare('UPDATE `districts` d SET `name` = :name, `population` = :population, `description` = :description  WHERE d.id = :id');
+        $sdh->execute(['id' => $district->getId(),'name' => $district->getName(),'population' => $district->getPopulation(),'description' => $district->getDescription() ]);
     }
 
-    public function delete(District $district)
+    public function delete(ModelInterface $district)
     {
-
+        $sdh = $this->pdo->prepare('DELETE FROM `districts` d WHERE `districts`.`id` = :id');
+        $sdh->execute([ 'id' => $district->getId() ]);
+    }
+    public function deleteById(int $id)
+    {
+        $sdh = $this->pdo->prepare('DELETE FROM `districts` WHERE `districts`.`id` = :id');
+        $sdh->bindParam(':id', $id, \PDO::PARAM_INT);
+        $sdh->execute();
     }
 
-    public function colection($conditions)
+    public function collection($conditions = null)
     {
+        $sdh = $this->pdo->prepare("SELECT * FROM `districts`");
+        $sdh->execute();
+        $sdh->setFetchMode(\PDO::FETCH_CLASS, \App\Model\District::class);
 
+        return $sdh->fetchAll();
     }
 }

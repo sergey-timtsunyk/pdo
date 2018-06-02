@@ -1,5 +1,9 @@
 <?php
-require_once ('autoload.php');
+
+use App\Controller\DistrictController;
+use App\Route\RouteHandler;
+
+require_once 'vendor/autoload.php';
 
 $host = '127.0.0.1';
 $dbName = 'test_db';
@@ -8,48 +12,72 @@ $pass = '123';
 
 try {
     $dbh = new PDO("mysql:host=$host;dbname=$dbName;charset=utf8", $user, $pass);
-
     \App\Store\FactoryStore::init($dbh);
-
-    $storeHandlerStreet = \App\Store\FactoryStore::getStoreHandlerByClassModel(\App\Model\Street::class);
-
-
-    $street = $storeHandlerStreet->findById(1);
-
-    var_dump($street);
-
-
     $storeHandlerDistrict = \App\Store\FactoryStore::getStoreHandlerByClassModel(\App\Model\District::class);
 
-    $district = $storeHandlerDistrict->findById(13);
+    $routCollection = [
+        'DistrictController::getList' => new DistrictController($storeHandlerDistrict),
+    ];
 
-    $district->setName('13 РАЙОН');
-
-    //$storeHandlerDistrict->update($district);
-
-    //@TODO Созданее нового
-/*    $district = new \App\Model\District();
-    $district->setName('Новый Район1');
-    $district->setPopulation(123000);
+    $controllerName = RouteHandler::init();
 
 
-    $storeHandlerDistrict->create($district);*/
+/*    var_dump($_SERVER['PATH_INFO']);
+    var_dump($_SERVER['REQUEST_METHOD']);
+    var_dump($_SERVER['QUERY_STRING']);*/
 
 
-    var_dump($district);
 
-    //@TODO Выборка
-/*    $population = '300000';
-    $sdh = $dbh->prepare('SELECT * FROM districts d WHERE d.population > :population');
-    $sdh->bindParam(':population', $population);
-    $sdh->execute();
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['PATH_INFO'] === '/districts'){
 
-    foreach ($sdh->fetchAll(PDO::FETCH_CLASS, \App\Model\District::class) as $row) {
-        var_dump($row);
-    }*/
+        $controller = new DistrictController();
+
+        echo $controller->getList();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['PATH_INFO'] === '/districts') {
+
+        if (empty($_POST['district']) && empty($_POST['name']) && empty($_POST['population']) && empty($_POST['description'])) {
+            throw new \Exception('Empty data!');
+        }
+
+        $newDistrict = new \App\Model\District;
+        $newDistrict->setName($_POST['name']);
+        $newDistrict->setPopulation($_POST['population']);
+        $newDistrict->setDescription($_POST['description']);
+        $storeHandlerDistrict->create($newDistrict);
+    }
+
+    if (!empty($_POST['delete']) && $_POST['delete'] === 'ok' && !empty($_POST['id'] || $_POST['id'] === '0')) {
+        $storeHandlerDistrict->deleteById($_POST['id']);
+
+    }
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && false !== strpos($_SERVER['PATH_INFO'], '/districts/')) {
+
+        $path = $_SERVER['PATH_INFO'];
+        $id = (int)str_replace( '/districts/', '', $path);
+
+        $editDistrict = $storeHandlerDistrict->findById($id);
+
+        echo $editDistrict->getName().";".$editDistrict->getPopulation().";".$editDistrict->getDescription();
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && false !== strpos($_SERVER['PATH_INFO'], '/districts/')) {
+
+        $path = $_SERVER['PATH_INFO'];
+        $id = (int)str_replace( '/districts/', '', $path);
+
+        $editDistrict = $storeHandlerDistrict->findById($id);
+        $editDistrict->setName($_POST['name']);
+        $editDistrict->setPopulation($_POST['population']);
+        $editDistrict->setDescription($_POST['description']);
+        $storeHandlerDistrict->update($editDistrict);
+    }
+
 
 } catch (PDOException $exception) {
     echo $exception->getMessage();
 } catch (Exception $e) {
 }
+
 

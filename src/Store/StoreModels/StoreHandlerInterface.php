@@ -13,4 +13,6 @@ interface StoreHandlerInterface
     public function findById(int $id): ModelInterface;
 
     public function create(ModelInterface &$model): void;
+
+    public function collection($conditions = null);
 }
