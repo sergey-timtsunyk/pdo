@@ -6,9 +6,9 @@ use App\Route\RouteHandler;
 require_once 'vendor/autoload.php';
 
 $host = '127.0.0.1';
-$dbName = 'test_db';
+$dbName = 'hillel';
 $user = 'root';
-$pass = '123';
+$pass = '';
 
 try {
     $dbh = new PDO("mysql:host=$host;dbname=$dbName;charset=utf8", $user, $pass);
