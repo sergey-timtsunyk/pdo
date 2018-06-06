@@ -1,12 +1,10 @@
 $.ajax({
-        url: "/districts",
-        type: "GET",
-        success(a){
-            $(a).insertAfter( $(".table") );
-        }
-    });
-
-setTimeout(function(){
+    url: "/districts",
+    type: "GET",
+    success(a){
+        $(a).insertAfter( $(".table") );
+    }
+});
 
     $('.modal-district').click(function() {
 
@@ -70,11 +68,11 @@ setTimeout(function(){
         request = $.ajax({
             url: "/districts/"+id,
             type: "GET",
+            dataType: "json",
             success(a){
-                var arr = a.split(';');
-                $(".edit-modal [name='name']").val(arr[0]);
-                $(".edit-modal [name='population']").val(arr[1]);
-                $(".edit-modal [name='description']").val(arr[2]);
+                $(".edit-modal [name='name']").val(a.name);
+                $(".edit-modal [name='population']").val(a.population);
+                $(".edit-modal [name='description']").val(a.description);
             }
         });
         return false;
@@ -90,6 +88,3 @@ setTimeout(function(){
             }
         });
     });
-
-}, 500);
-

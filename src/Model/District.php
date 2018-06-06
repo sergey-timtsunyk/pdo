@@ -6,8 +6,11 @@
 
 namespace App\Model;
 
+
 class District implements ModelInterface
 {
+    use TraitModelGetArrayToProperties;
+
     private $id;
     private $name;
     private $population;

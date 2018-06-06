@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css"  crossorigin="anonymous">
-    <link rel="stylesheet" href="css/main.css">
-    <link href="css/popup-m1-style.css-v=4.css"  rel="stylesheet" type="text/css"/>
-
-
-</head>
-<body>
-
 <div class="table" style="display: none"></div>
 <button class="modal-district">добавить район</button>
 
@@ -47,8 +33,12 @@
     </div>
 </div>
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="js/popup-m1.js-v=4.js" tppabs="http://static.best-gooods.ru/js/popup-m1.js?v=4" type="text/javascript"></script>
-    <script src="js/main.js" type="text/javascript"></script>
-</body>
-</html>
+<table class='new-table'><tr><th>id</th><th>Name</th><th>Population</th><th>Description</th><th>Редакт</th><th>Удалить</th></tr >
+<?php
+    /** @var District $value */
+    foreach ($districts as $value) {
+        echo "<tr><td class=\"id\">{$value->getId()}</td><td >{$value->getName()}</td>
+        <td>{$value->getPopulation()}</td><td>{$value->getDescription()}</td><td><button class='edit'>редакт</button></td><td><button class='delete'>удалить</button></td></tr>";
+    }
+?>
+</table>

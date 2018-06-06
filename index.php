@@ -1,7 +1,7 @@
 <?php
 
-use App\Controller\DistrictController;
-use App\Route\RouteHandler;
+use App\Exception\ExceptionApp;
+use App\Request\RequestHandler;
 
 require_once 'vendor/autoload.php';
 
@@ -13,71 +13,42 @@ $pass = '123';
 try {
     $dbh = new PDO("mysql:host=$host;dbname=$dbName;charset=utf8", $user, $pass);
     \App\Store\FactoryStore::init($dbh);
+
     $storeHandlerDistrict = \App\Store\FactoryStore::getStoreHandlerByClassModel(\App\Model\District::class);
 
-    $routCollection = [
-        'DistrictController::getList' => new DistrictController($storeHandlerDistrict),
+    $controllerCollection = [
+        'MainController' => new \App\Controller\MainController($storeHandlerDistrict),
+        'DistrictController' => new \App\Controller\DistrictController($storeHandlerDistrict),
     ];
 
-    $controllerName = RouteHandler::init();
+    $request = RequestHandler::initRequest();
 
-
-/*    var_dump($_SERVER['PATH_INFO']);
-    var_dump($_SERVER['REQUEST_METHOD']);
-    var_dump($_SERVER['QUERY_STRING']);*/
-
-
-
-    if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['PATH_INFO'] === '/districts'){
-
-        $controller = new DistrictController();
-
-        echo $controller->getList();
+    if (!array_key_exists($request->getHandler(), $controllerCollection)) {
+        throw new \App\Exception\ExceptionController(
+            sprintf('Not fount class controller: %s.', $request->getHandler())
+        );
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['PATH_INFO'] === '/districts') {
+    $controller = $controllerCollection[$request->getHandler()];
 
-        if (empty($_POST['district']) && empty($_POST['name']) && empty($_POST['population']) && empty($_POST['description'])) {
-            throw new \Exception('Empty data!');
-        }
-
-        $newDistrict = new \App\Model\District;
-        $newDistrict->setName($_POST['name']);
-        $newDistrict->setPopulation($_POST['population']);
-        $newDistrict->setDescription($_POST['description']);
-        $storeHandlerDistrict->create($newDistrict);
+    if (!method_exists($controller, $request->getMethod())) {
+        throw new \App\Exception\ExceptionController(
+            sprintf('Not fount method [%s] in class: %s.', $request->getMethod(), $request->getHandler())
+        );
     }
-
-    if (!empty($_POST['delete']) && $_POST['delete'] === 'ok' && !empty($_POST['id'] || $_POST['id'] === '0')) {
-        $storeHandlerDistrict->deleteById($_POST['id']);
-
-    }
-    if ($_SERVER['REQUEST_METHOD'] === 'GET' && false !== strpos($_SERVER['PATH_INFO'], '/districts/')) {
-
-        $path = $_SERVER['PATH_INFO'];
-        $id = (int)str_replace( '/districts/', '', $path);
-
-        $editDistrict = $storeHandlerDistrict->findById($id);
-
-        echo $editDistrict->getName().";".$editDistrict->getPopulation().";".$editDistrict->getDescription();
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && false !== strpos($_SERVER['PATH_INFO'], '/districts/')) {
-
-        $path = $_SERVER['PATH_INFO'];
-        $id = (int)str_replace( '/districts/', '', $path);
-
-        $editDistrict = $storeHandlerDistrict->findById($id);
-        $editDistrict->setName($_POST['name']);
-        $editDistrict->setPopulation($_POST['population']);
-        $editDistrict->setDescription($_POST['description']);
-        $storeHandlerDistrict->update($editDistrict);
-    }
+ 
+    $method = $request->getMethod();
+    $controller->$method($request);
 
 
+} catch (ExceptionApp $exception) {
+    echo $exception->getMessage();
 } catch (PDOException $exception) {
     echo $exception->getMessage();
 } catch (Exception $e) {
+    throw $e;
+} catch (Throwable $e) {
+
 }
 
 

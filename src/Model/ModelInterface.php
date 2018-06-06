@@ -6,7 +6,7 @@
 
 namespace App\Model;
 
-interface ModelInterface
+interface ModelInterface extends ModelGetArrayToPropertiesInterface
 {
     public function getId(): int;
 }
