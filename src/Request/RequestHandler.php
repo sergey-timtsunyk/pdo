@@ -6,16 +6,19 @@
 
 namespace App\Request;
 
+use App\Exception\ExceptionApp;
+
 class RequestHandler
 {
     /**
      * @return Request
+     * @throws ExceptionApp
      */
     public static  function initRequest(): Request
     {
         $dispatcher = \FastRoute\simpleDispatcher(function(\FastRoute\RouteCollector $r) {
             $r->addRoute('GET', '/', 'MainController::index');
-            $r->addRoute('GET', '/districts', 'DistrictController::getList');
+            //$r->addRoute('GET', '/districts', 'DistrictController::getList');
             // {id} must be a number (\d+)
             $r->addRoute('GET', '/districts/{id:\d+}', 'DistrictController::getDistrict');
             $r->addRoute('POST', '/districts/{id:\d+}', 'DistrictController::editDistrict');
@@ -35,11 +38,9 @@ class RequestHandler
 
         switch ($routeInfo[0]) {
             case \FastRoute\Dispatcher::NOT_FOUND:
-                break;
+                throw new ExceptionApp('Not found controller.');
             case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
-                // ... 405 Method Not Allowed
-                break;
+                throw new ExceptionApp('Not found method.');
             case \FastRoute\Dispatcher::FOUND:
                 [$handler, $method] = self::parserHandler($routeInfo[1]);
                 $vars = $routeInfo[2];

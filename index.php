@@ -31,7 +31,7 @@ try {
 
     $controller = $controllerCollection[$request->getHandler()];
 
-    if (method_exists($controller, $request->getMethod())) {
+    if (!method_exists($controller, $request->getMethod())) {
         throw new \App\Exception\ExceptionController(
             sprintf('Not fount method [%s] in class: %s.', $request->getMethod(), $request->getHandler())
         );
@@ -40,10 +40,15 @@ try {
     $method = $request->getMethod();
     $controller->$method($request);
 
+} catch (\App\Exception\ExceptionValidation $e) {
+    $status = sprintf('%s %s', $_SERVER['SERVER_PROTOCOL'], '404 validation error');
+    header($status, true, 404);
+    echo $e->getMessage();
 } catch (ExceptionApp $e) {
     \App\Controller\Controller::renderError($e->getMessage());
 } catch (Throwable $t) {
-    \App\Controller\Controller::renderError($t->getMessage(), 400);
+    echo $t;
+  //  \App\Controller\Controller::renderError($t->getMessage(), 400);
 }
 
 

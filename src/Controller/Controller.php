@@ -54,7 +54,6 @@ class Controller
         ob_end_clean();
 
         ob_start();
-        header($_SERVER['SERVER_PROTOCOL']. ' 404 Not Found', true, 404);
         require self::$dirViews.'layout.php';
 
         return ob_get_flush();

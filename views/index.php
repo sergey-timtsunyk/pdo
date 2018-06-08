@@ -7,10 +7,10 @@
     <div>
         <div class="popup-m1-title">Добавить</div>
         <div class="popup-m1-cont"><div class="popup-m1-text1">Заполните все поля и нажмите добавить</div>
-            <form  method="post" class="popup-m1-form">
-                <input type="text" name="name"        placeholder="Имя района" required="">
-                <input type="text" name="population"  placeholder="Население" required="">
-                <textarea name="description" id="" placeholder="Описание" required="" cols="30" rows="10"></textarea>
+            <form class="popup-m1-form">
+                <input type="text" name="name"        placeholder="Имя района" >
+                <input type="text" name="population"  placeholder="Население" >
+                <textarea name="description" id="" placeholder="Описание" cols="30" rows="10"></textarea>
                 <input type="hidden" name="district" value="1">
                 <button class="add-district">добавить</button>
             </form>
@@ -21,13 +21,13 @@
     <a class="close-m1"></a>
     <div>
         <div class="popup-m1-title">Редактировать</div>
-        <!--        <div class="popup-m1-cont"><div class="popup-m1-text1">Заполните все поля и нажмите добавить</div>-->
-        <form  method="post" class="popup-m1-form">
-            <input type="text" name="name"        placeholder="Имя района" required="">
-            <input type="text" name="population"  placeholder="Население" required="">
-            <textarea name="description" id="" placeholder="Описание" required="" cols="30" rows="10"></textarea>
+        <form class="popup-m1-form" enctype="multipart/form-data" onsubmit="return false;">
+            <input type="text" name="name" placeholder="Имя района" >
+            <input type="text" name="population"  placeholder="Население" >
+            <textarea name="description" id="" placeholder="Описание" cols="20" rows="5"></textarea>
             <input type="hidden" name="district-edit" value="1">
             <input type="hidden" class="edit-id" name="id" value="">
+            <div class="popup-m1-cont" style="display: none; padding: 10px; color: red"><div class="popup-m1-text1 validation">Заполните все поля и нажмите добавить</div></div>
             <button class="edit-district">сохранить</button>
         </form>
     </div>

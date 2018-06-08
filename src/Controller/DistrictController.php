@@ -1,8 +1,11 @@
 <?php
 namespace App\Controller;
 
+use App\Exception\ExceptionValidation;
 use App\Model\District;
 use App\Request\Request;
+use App\Store\StoreModels\StoreHandlerInterface;
+use App\Validation\ValidationHandlerInterface;
 
 class DistrictController extends Controller
 {
@@ -11,9 +14,15 @@ class DistrictController extends Controller
      */
     private $storeHandlerDistrict;
 
-    public function __construct($storeHandlerDistrict)
+    /**
+     * @var ValidationHandlerInterface
+     */
+    private $validate;
+
+    public function __construct(StoreHandlerInterface $storeHandlerDistrict, ValidationHandlerInterface $validate)
     {
         $this->storeHandlerDistrict = $storeHandlerDistrict;
+        $this->validate = $validate;
     }
 
     public function getList()
@@ -71,7 +80,14 @@ class DistrictController extends Controller
      */
     public function editDistrict(Request $request)
     {
-        $id = $request->getVarParameter('id');
+        $this->validate->setData($request->getRequest())
+            ->setRulers([
+                'name' => ['required'],
+                'population' => ['required', 'int'],
+                'description' => ['required'],
+            ])
+            ->validated();
+
         /** @var District $district */
         $district = $this->storeHandlerDistrict->findById($id);
 
@@ -79,5 +95,7 @@ class DistrictController extends Controller
         $district->setPopulation($request->getRequestParameter('population'));
         $district->setDescription($request->getRequestParameter('description'));
         $this->storeHandlerDistrict->update($district);
+
+        return $this->render('sauces');
     }
 }
