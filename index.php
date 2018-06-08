@@ -41,14 +41,14 @@ try {
     $controller->$method($request);
 
 
+} catch (PDOException $exception) {
+    echo $exception->getMessage();
 } catch (ExceptionApp $exception) {
     echo $exception->getMessage();
 } catch (PDOException $exception) {
     echo $exception->getMessage();
-} catch (Exception $e) {
-    throw $e;
 } catch (Throwable $e) {
-
+    echo $e->getMessage();
 }
 
 
