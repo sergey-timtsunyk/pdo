@@ -42,6 +42,10 @@ class DistrictController extends Controller
         return $this->render(json_encode($district->getArray(), JSON_UNESCAPED_UNICODE));
     }
 
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function createDistrict(Request $request): string
     {
         $district = new \App\Model\District;

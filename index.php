@@ -31,7 +31,7 @@ try {
 
     $controller = $controllerCollection[$request->getHandler()];
 
-    if (!method_exists($controller, $request->getMethod())) {
+    if (method_exists($controller, $request->getMethod())) {
         throw new \App\Exception\ExceptionController(
             sprintf('Not fount method [%s] in class: %s.', $request->getMethod(), $request->getHandler())
         );
@@ -40,15 +40,10 @@ try {
     $method = $request->getMethod();
     $controller->$method($request);
 
-
-} catch (ExceptionApp $exception) {
-    echo $exception->getMessage();
-} catch (PDOException $exception) {
-    echo $exception->getMessage();
-} catch (Exception $e) {
-    throw $e;
-} catch (Throwable $e) {
-
+} catch (ExceptionApp $e) {
+    \App\Controller\Controller::renderError($e->getMessage());
+} catch (Throwable $t) {
+    \App\Controller\Controller::renderError($t->getMessage(), 400);
 }
 
 
