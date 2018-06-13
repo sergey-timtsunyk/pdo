@@ -11,6 +11,9 @@ class District implements ModelInterface
 {
     use TraitModelGetArrayToProperties;
 
+    /**
+     * @var
+     */
     private $id;
     private $name;
     private $population;

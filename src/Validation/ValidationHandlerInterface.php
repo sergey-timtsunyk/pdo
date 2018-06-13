@@ -6,9 +6,11 @@
 
 namespace App\Validation;
 
+use App\Exception\ExceptionValidation;
+
 interface ValidationHandlerInterface
 {
-    public function setData(array $parameters): self;
-    public function setRulers(array $parameters): self;
+    public function setData(array $data): self;
+    public function setRulers(array $rulers): self;
     public function validated();
 }
