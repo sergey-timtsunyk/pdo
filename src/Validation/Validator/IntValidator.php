@@ -19,7 +19,7 @@ class IntValidator implements ValidatorInterface
     {
         $this->name = $name;
 
-        return \is_int($data[$name]);
+        return array_key_exists($name, $data) && \is_int($data[$name]);
     }
 
     /**
